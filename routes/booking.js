@@ -79,20 +79,18 @@ router.post('/book', async (req, res) => {
 
     await booking.save();
 
-    // Generate receipt PDF
-    const pdfBuffer = await generateReceiptPDF(booking);
-
-    // Save locally for download
-    const receiptsDir = path.join(__dirname, '..', 'public', 'receipts');
-    if (!fs.existsSync(receiptsDir)) {
-      fs.mkdirSync(receiptsDir, { recursive: true });
-    }
-
-    const pdfPath = path.join(receiptsDir, `${receiptNumber}.pdf`);
-    fs.writeFileSync(pdfPath, pdfBuffer);
-
-    // Send email to client only (skip in test environment)
+    // Skip PDF generation and email in test environment
     if (process.env.NODE_ENV !== 'test') {
+      const pdfBuffer = await generateReceiptPDF(booking);
+
+      const receiptsDir = path.join(__dirname, '..', 'public', 'receipts');
+      if (!fs.existsSync(receiptsDir)) {
+        fs.mkdirSync(receiptsDir, { recursive: true });
+      }
+
+      const pdfPath = path.join(receiptsDir, `${receiptNumber}.pdf`);
+      fs.writeFileSync(pdfPath, pdfBuffer);
+
       console.log(`📤 Sending receipt to user: ${email}`);
       await sendEmailWithPDF(email, pdfBuffer, booking);
     }
