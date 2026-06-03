@@ -29,6 +29,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: install
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+    env:
+      MONGO_URI: mongodb://localhost:27017/musango-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
