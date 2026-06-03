@@ -112,8 +112,8 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f deployment/mongo.yaml
-          kubectl apply -f deployment/musango.yaml
+          kubectl apply -f musango-app/kubernetes/deployment/mongo.yaml
+          kubectl apply -f musango-app/kubernetes/deployment/musango.yaml
 
       - name: Verify deployment
         run: |
